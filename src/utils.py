@@ -77,23 +77,28 @@ def generate_instructions(features):
                 for coord in coords:
                     floor_info[tuple(coord)] = floor
 
-        if props.get('travelType') in ['LIFT', 'STAIRS', 'ESCALATOR']:
+        if props.get('travelType') in ['LIFT', 'STAIRS', 'ESCALATOR', 'RAMP']:
             coord = tuple(geometry['coordinates'])
-            vertical_transport[coord] = props
+            vertical_transport[coord] = {
+                'type': props['travelType'],
+                'direction': props.get('direction'),
+                'sourceFloor': props.get('sourceFloor'),
+                'destinationFloor': props.get('destinationFloor')
+            }
 
         if props.get('endpointType') == 'from':
             start_point = tuple(geometry['coordinates'])
-            start_floor = props.get('floor')
+            start_floor = props.get('floor', 0)
             start_label = props.get('label')
         elif props.get('endpointType') == 'to':
             end_point = tuple(geometry['coordinates'])
-            end_floor = props.get('floor')
+            end_floor = props.get('floor', 0)
             end_label = props.get('label')
 
     simplified_path = douglas_peucker(all_coords, epsilon=0.00005)
 
-    current_floor = start_floor if start_floor is not None else 0
-    instructions.append(f"You are at {start_label} on floor {current_floor}")
+    current_floor = start_floor
+    instructions.append(f"You are at {start_label} on floor {current_floor}.")
 
     for i in range(len(simplified_path) - 1):
         start = tuple(simplified_path[i])
@@ -105,38 +110,30 @@ def generate_instructions(features):
             prev = tuple(simplified_path[i - 1])
             angle = calculate_relative_angle(prev, start, end)
             turn_instruction = get_turn_instruction(angle)
-            instructions.append(f"{turn_instruction} and walk for about {round(segment_distance)} meters")
+            instructions.append(f"{turn_instruction} and continue for about {round(segment_distance)} meters.")
         else:
-            instructions.append(f"Walk straight for about {round(segment_distance)} meters")
+            instructions.append(f"Walk straight for about {round(segment_distance)} meters.")
 
         # Check for vertical transport
-        for coord in [start, end]:
-            if coord in vertical_transport:
-                transport = vertical_transport[coord]
-                transport_type = transport['travelType'].lower()
-                direction = transport.get('direction', 'to')
-                source_floor = transport.get('sourceFloor')
-                dest_floor = transport.get('destinationFloor')
-                if source_floor == current_floor:
-                    instructions.append(f"Take the {transport_type} {direction} floor {dest_floor}")
-                    current_floor = dest_floor
+        for coord, transport in vertical_transport.items():
+            if distance.distance(coord[::-1], end[::-1]).meters < 5:  # within 5 meters
+                transport_type = transport['type'].lower()
+                direction = transport['direction']
+                source_floor = transport['sourceFloor']
+                dest_floor = transport['destinationFloor']
+                instructions.append(f"You are in front of a {transport_type}.")
+                instructions.append(f"Take the {transport_type} {direction} from floor {source_floor} to floor {dest_floor}.")
+                current_floor = dest_floor
                 break
 
         # Check for floor changes without explicit vertical transport
         if end in floor_info and floor_info[end] != current_floor:
             new_floor = floor_info[end]
-            if new_floor is not None and current_floor is not None:
-                if new_floor > current_floor:
-                    direction = "up"
-                elif new_floor < current_floor:
-                    direction = "down"
-                else:
-                    direction = "to"
-                instructions.append(f"Go {direction} to floor {new_floor}")
+            if new_floor != current_floor:
+                instructions.append(f"You are now on floor {new_floor}.")
             current_floor = new_floor
 
-    end_floor = end_floor if end_floor is not None else current_floor
-    instructions.append(f"You have arrived at {end_label} on floor {end_floor}")
-    instructions.append(f"Total walking distance: approximately {round(total_distance)} meters")
+    instructions.append(f"You have arrived at {end_label} on floor {end_floor}.")
+    instructions.append(f"Total distance: approximately {round(total_distance)} meters.")
 
     return instructions

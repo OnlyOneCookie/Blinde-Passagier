@@ -1,0 +1,116 @@
+:root {
+    --sbb-red: #EB0000;
+    --sbb-black: #000000;
+    --sbb-white: #FFFFFF;
+    --sbb-grey: #767676;
+    --sbb-light-grey: #F6F6F6;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--sbb-light-grey);
+    margin: 0;
+    padding: 0;
+    color: var(--sbb-black);
+}
+
+.sbb-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.sbb-header {
+    background-color: var(--sbb-red);
+    color: var(--sbb-white);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--sbb-grey);
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.sbb-button {
+    background-color: var(--sbb-red);
+    color: var(--sbb-white);
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.sbb-button:hover {
+    background-color: #C60018;
+}
+
+#instructions {
+    margin-top: 30px;
+    background-color: var(--sbb-white);
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sbb-instructions {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sbb-instructions li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: var(--sbb-light-grey);
+    border-radius: 4px;
+}
+
+/* Select2 Customization */
+.select2-container--default .select2-selection--single {
+    border: 1px solid var(--sbb-grey);
+    border-radius: 4px;
+    height: 40px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 40px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+}
+
+.select2-dropdown {
+    border: 1px solid var(--sbb-grey);
+}
+
+.select2-results__option {
+    padding: 10px;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--sbb-red);
+}

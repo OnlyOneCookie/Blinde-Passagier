@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBB Transfer Instructions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+<body>
+    <div class="sbb-container">
+        <header class="sbb-header">
+            <h1>SBB Transfer Instructions</h1>
+        </header>
+        <main>
+            <form id="transfer-form" method="post">
+                <div class="form-group">
+                    <label for="from-station">From Station:</label>
+                    <select id="from-station" name="from-station" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="from-track">From Track:</label>
+                    <input type="text" id="from-track" name="from-track" required>
+                </div>
+                <div class="form-group">
+                    <label for="to-station">To Station:</label>
+                    <select id="to-station" name="to-station" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="to-track">To Track:</label>
+                    <input type="text" id="to-track" name="to-track" required>
+                </div>
+                <button type="submit" class="sbb-button">Get Instructions</button>
+            </form>
+
+            <div id="instructions">
+                {% if instructions %}
+                    <h2>Transfer Instructions:</h2>
+                    <ul class="sbb-instructions">
+                    {% for instruction in instructions %}
+                        <li>{{ instruction }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+
+
+    <script>
+    $(document).ready(function() {
+        function formatStation(station) {
+            if (station.loading) {
+                return station.text;
+            }
+            return station.name || station.text;
+        }
+
+        function formatStationSelection(station) {
+            return station.name || station.text;
+        }
+
+        $('#from-station, #to-station').select2({
+            ajax: {
+                url: '/stations',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        query: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 2,
+            templateResult: formatStation,
+            templateSelection: formatStationSelection,
+            width: '100%',
+            dropdownParent: $('body')
+        }).on('select2:select', function (e) {
+            var data = e.params.data;
+            console.log(data);
+            // You can handle the selection here if needed
+        });
+
+        $('#transfer-form').on('submit', function(e) {
+            e.preventDefault();
+            if (this.checkValidity()) {
+                this.submit();
+            } else {
+                alert('Please fill out all fields.');
+            }
+        });
+    });
+</script>
+</body>
+</html>
