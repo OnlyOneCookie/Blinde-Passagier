@@ -1,10 +1,13 @@
 # Blindä Passagier
 ## Demo Website
 - You can find the demo which is the visualization of the backend logic here: https://bernhackt24.web.app
+- **IMPORTANT NOTE:** You need to wait while you enter the station's name, since that searchbox is not optimized on speed. Have some patience.
+- Use the example "Lausanne" as the station and track 4 to 6.
 
 ## Before we start
 ### What you need to do
 - SwissPass
+- [Python >v3.10](https://www.python.org/downloads/release/python-3100/)
 - [SBB Developer Account](https://developer.sbb.ch/home)
 - [SBB Journey Maps API Key](https://developer.sbb.ch/apis/journey-maps/information)
 - [Node.js v20.17.0](https://github.com/nodejs/node/tree/v20.17.0)
