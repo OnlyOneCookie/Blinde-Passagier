@@ -25,25 +25,22 @@ wrapper = None
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    instructions = None
     if request.method == 'POST':
-        from_station = request.form['from-station']
-        to_station = request.form['to-station']
+        station_id = request.form['station']
         from_track = request.form['from-track']
         to_track = request.form['to-track']
 
         try:
             data = wrapper.get('transfer', client='webshop', clientVersion='latest', lang='en',
-                               fromStationID=from_station,
-                               toStationID=to_station, fromTrack=from_track, toTrack=to_track, accessible='true')
+                               fromStationID=station_id, toStationID=station_id,
+                               fromTrack=from_track, toTrack=to_track, accessible='true')
             instructions = generate_instructions(data['features'])
         except Exception as e:
             instructions = [f"An error occurred: {str(e)}"]
 
-        return render_template('index.html', stations=stations, instructions=instructions)
+        return render_template('index.html', instructions=instructions)
 
-    return render_template('index.html', stations=stations)
-
+    return render_template('index.html')
 
 @app.route('/stations', methods=['GET'])
 def get_stations():

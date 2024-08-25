@@ -1,0 +1,36 @@
+<div class="sbb-container">
+  <h1>SBB Blindä Passagier</h1>
+  <form (ngSubmit)="onSubmit()">
+    <sbb-form-field>
+      <sbb-label>Select Station</sbb-label>
+      <input type="text"
+             sbbInput
+             [formControl]="stationControl"
+             [sbbAutocomplete]="auto">
+      <sbb-autocomplete #auto="sbbAutocomplete" [displayWith]="displayFn">
+        <sbb-option *ngFor="let station of filteredStations | async" [value]="station">
+          {{station.name}}
+        </sbb-option>
+      </sbb-autocomplete>
+    </sbb-form-field>
+
+    <sbb-form-field>
+      <sbb-label>From Track</sbb-label>
+      <input sbbInput [(ngModel)]="fromTrack" name="fromTrack" required>
+    </sbb-form-field>
+
+    <sbb-form-field>
+      <sbb-label>To Track</sbb-label>
+      <input sbbInput [(ngModel)]="toTrack" name="toTrack" required>
+    </sbb-form-field>
+
+    <button sbb-button type="submit">Get Instructions</button>
+  </form>
+
+  <div *ngIf="instructions.length > 0">
+    <h2>Transfer Instructions:</h2>
+    <ul>
+      <li *ngFor="let instruction of instructions">{{instruction}}</li>
+    </ul>
+  </div>
+</div>

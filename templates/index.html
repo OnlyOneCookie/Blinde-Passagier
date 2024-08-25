@@ -17,16 +17,12 @@
         <main>
             <form id="transfer-form" method="post">
                 <div class="form-group">
-                    <label for="from-station">From Station:</label>
-                    <select id="from-station" name="from-station" required></select>
+                    <label for="station">Station:</label>
+                    <select id="station" name="station" required></select>
                 </div>
                 <div class="form-group">
                     <label for="from-track">From Track:</label>
                     <input type="text" id="from-track" name="from-track" required>
-                </div>
-                <div class="form-group">
-                    <label for="to-station">To Station:</label>
-                    <select id="to-station" name="to-station" required></select>
                 </div>
                 <div class="form-group">
                     <label for="to-track">To Track:</label>
@@ -48,58 +44,56 @@
         </main>
     </div>
 
-
-
     <script>
-    $(document).ready(function() {
-        function formatStation(station) {
-            if (station.loading) {
-                return station.text;
+        $(document).ready(function() {
+            function formatStation(station) {
+                if (station.loading) {
+                    return station.text;
+                }
+                return station.name || station.text;
             }
-            return station.name || station.text;
-        }
 
-        function formatStationSelection(station) {
-            return station.name || station.text;
-        }
-
-        $('#from-station, #to-station').select2({
-            ajax: {
-                url: '/stations',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        query: params.term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 2,
-            templateResult: formatStation,
-            templateSelection: formatStationSelection,
-            width: '100%',
-            dropdownParent: $('body')
-        }).on('select2:select', function (e) {
-            var data = e.params.data;
-            console.log(data);
-            // You can handle the selection here if needed
-        });
-
-        $('#transfer-form').on('submit', function(e) {
-            e.preventDefault();
-            if (this.checkValidity()) {
-                this.submit();
-            } else {
-                alert('Please fill out all fields.');
+            function formatStationSelection(station) {
+                return station.name || station.text;
             }
+
+            $('#station').select2({
+                ajax: {
+                    url: '/stations',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 2,
+                templateResult: formatStation,
+                templateSelection: formatStationSelection,
+                width: '100%',
+                dropdownParent: $('body')
+            }).on('select2:select', function (e) {
+                var data = e.params.data;
+                console.log(data);
+                // You can handle the selection here if needed
+            });
+
+            $('#transfer-form').on('submit', function(e) {
+                e.preventDefault();
+                if (this.checkValidity()) {
+                    this.submit();
+                } else {
+                    alert('Please fill out all fields.');
+                }
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
