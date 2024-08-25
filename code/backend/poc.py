@@ -12,9 +12,6 @@ def main():
 
     wrapper = SBBWrapper('https://journey-maps.api.sbb.ch', args.api_key)
 
-    # lausanne: 8501120
-    # zurich: 8503000
-    # baar: 8502206
     try:
         data = wrapper.get('transfer', client='webshop', clientVersion='latest', lang='en', fromStationID='8503000',
                            toStationID='8503000', fromTrack=15, toTrack=18, accessible='false')
